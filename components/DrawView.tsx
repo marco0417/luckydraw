@@ -131,7 +131,7 @@ const DrawView: React.FC<DrawViewProps> = ({
     onWinnerFound(newWinner);
     if (showModal) {
       setLastWinner(newWinner);
-      confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['#00ffff', '#ff00ff', '#ffffff', '#ffd700'] });
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#00ffff', '#ff00ff', '#ffffff', '#ffd700'] });
       setTimeout(() => setShowWinnerModal(true), 600);
     }
     return newWinner;
@@ -183,7 +183,6 @@ const DrawView: React.FC<DrawViewProps> = ({
     else setIsDrawing(true);
     setShowWinnerModal(false);
 
-    // Initial rolling effect
     let rollDuration = 1500;
     let startTime = Date.now();
     
@@ -212,7 +211,6 @@ const DrawView: React.FC<DrawViewProps> = ({
       for (let i = 0; i < totalToDraw; i++) {
         setBulkProgress({ current: i + 1, total: totalToDraw });
         const winner = selectWinner(tempEligible);
-        // Faster reveal for bulk mode
         await performReveal(winner, 2.5);
         executeWinnerLogic(winner, false);
         tempEligible = tempEligible.filter(p => p.id !== winner.id);
@@ -220,7 +218,7 @@ const DrawView: React.FC<DrawViewProps> = ({
       
       setIsRevealing(false);
       setBulkProgress(null);
-      confetti({ particleCount: 500, spread: 120, origin: { y: 0.5 }, colors: ['#00ffff', '#ff00ff', '#ffffff', '#ffd700'] });
+      confetti({ particleCount: 250, spread: 100, origin: { y: 0.5 }, colors: ['#00ffff', '#ff00ff', '#ffffff', '#ffd700'] });
       setTimeout(() => setShowSummaryModal(true), 400);
     } else {
       setIsDrawing(false);
@@ -347,7 +345,7 @@ const DrawView: React.FC<DrawViewProps> = ({
                           scale: isDrawing ? [1, 1.15, 0.9, 1] : 1,
                           y: isDrawing ? [0, -10, 10, 0] : 0
                       }}
-                      className="text-amber-400 font-orbitron text-5xl md:text-7xl uppercase tracking-[0.25em] font-black min-h-[1.5em] mb-6 neon-text-amber"
+                      className="text-amber-400 font-orbitron text-5xl md:text-7xl uppercase tracking-[0.25em] font-black min-h-[1.2em] mb-2 neon-text-amber leading-none"
                   >
                       {displaySub}
                   </motion.div>
@@ -362,7 +360,7 @@ const DrawView: React.FC<DrawViewProps> = ({
                   letterSpacing: (isDrawing) ? ["0.2em", "0.6em", "0.2em"] : "0.1em",
                 }}
                 transition={{ duration: 0.1, repeat: isDrawing ? Infinity : 0 }}
-                className={`font-orbitron font-black text-7xl md:text-[11rem] tracking-tighter whitespace-nowrap mb-4 min-h-[1.2em] px-10 ${
+                className={`font-orbitron font-black text-6xl md:text-[8rem] tracking-tighter whitespace-nowrap mb-4 min-h-[1.1em] px-10 leading-none ${
                   (isDrawing || isRevealing) ? 'text-white' : 'text-fuchsia-500 drop-shadow-[0_0_30px_rgba(217,70,239,0.9)]'
                 }`}
               >
@@ -370,8 +368,8 @@ const DrawView: React.FC<DrawViewProps> = ({
               </motion.div>
               
               {bulkProgress && (
-                <div className="mt-4 text-cyan-400/60 font-orbitron text-xl uppercase tracking-[0.5em]">
-                    抽取进度: {bulkProgress.current} / {bulkProgress.total}
+                <div className="mt-2 text-cyan-400/60 font-orbitron text-lg uppercase tracking-[0.5em]">
+                    进度: {bulkProgress.current} / {bulkProgress.total}
                 </div>
               )}
             </div>
@@ -443,33 +441,33 @@ const DrawView: React.FC<DrawViewProps> = ({
           >
             <motion.div
               initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 0.9, opacity: 1 }} exit={{ scale: 0.7, opacity: 0 }}
-              className="text-center space-y-6 p-10 relative max-w-3xl"
+              className="text-center space-y-4 p-10 relative max-w-4xl"
               onClick={e => e.stopPropagation()}
             >
               <div className="absolute inset-0 -z-10 bg-cyan-500/5 blur-[100px] rounded-full"></div>
-              <div className="text-yellow-400 flex justify-center mb-6">
+              <div className="text-yellow-400 flex justify-center mb-4">
                 <motion.div animate={{ y: [0, -8, 0], rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 3 }}>
-                  <Trophy size={120} strokeWidth={1} />
+                  <Trophy size={100} strokeWidth={1} />
                 </motion.div>
               </div>
-              <div className="space-y-4">
-                <h3 className="text-xl text-white/40 font-orbitron tracking-[1em] uppercase font-black">恭喜获奖</h3>
-                <h2 className="text-7xl md:text-[9rem] font-orbitron font-black text-white leading-tight drop-shadow-[0_0_25px_rgba(255,255,255,0.4)] whitespace-nowrap">{lastWinner.participantName}</h2>
-                <div className="text-3xl md:text-5xl text-amber-400 font-orbitron tracking-[0.4em] mb-8 font-bold uppercase">{lastWinner.participantDepartment || 'STAFF'}</div>
-                <div className="inline-block px-12 py-6 bg-cyan-500/10 border-y border-cyan-500/40">
-                  <span className="text-3xl text-white font-orbitron tracking-[0.3em] font-bold">{lastWinner.prizeCategory}: {lastWinner.prizeName}</span>
+              <div className="space-y-2">
+                <h3 className="text-lg text-white/40 font-orbitron tracking-[1em] uppercase font-black">恭喜获奖</h3>
+                <h2 className="text-6xl md:text-[7rem] font-orbitron font-black text-white leading-tight drop-shadow-[0_0_25px_rgba(255,255,255,0.4)] whitespace-nowrap">{lastWinner.participantName}</h2>
+                <div className="text-4xl md:text-6xl text-amber-400 font-orbitron tracking-[0.4em] mb-8 font-bold uppercase neon-text-amber">{lastWinner.participantDepartment || 'STAFF'}</div>
+                <div className="inline-block px-10 py-5 bg-cyan-500/10 border-y border-cyan-500/40">
+                  <span className="text-2xl text-white font-orbitron tracking-[0.3em] font-bold">{lastWinner.prizeCategory}: {lastWinner.prizeName}</span>
                 </div>
               </div>
               
-              <div className="mt-16 flex flex-wrap justify-center gap-6">
+              <div className="mt-12 flex flex-wrap justify-center gap-6">
                 {currentPrize && currentPrize.remaining > 0 && (
                   <button 
                     onClick={() => { setShowWinnerModal(false); startDraw(false); }}
-                    className="px-20 py-5 bg-cyan-500 text-black font-orbitron font-black uppercase tracking-[0.3em] hover:bg-cyan-400 transition-all hover:scale-105 active:scale-95 text-xl rounded shadow-lg shadow-cyan-500/20"
+                    className="px-16 py-4 bg-cyan-500 text-black font-orbitron font-black uppercase tracking-[0.3em] hover:bg-cyan-400 transition-all hover:scale-105 active:scale-95 text-xl rounded shadow-lg shadow-cyan-500/20"
                   >继续抽奖</button>
                 )}
-                <button onClick={closeWinnerModal} className="px-20 py-5 bg-white/10 text-white font-orbitron font-black uppercase tracking-[0.3em] hover:bg-white/20 transition-all text-xl rounded">
-                  {currentPrize && currentPrize.remaining === 0 ? "查看总结" : "抽取完成"}
+                <button onClick={closeWinnerModal} className="px-16 py-4 bg-white/10 text-white font-orbitron font-black uppercase tracking-[0.3em] hover:bg-white/20 transition-all text-xl rounded">
+                  {currentPrize && currentPrize.remaining === 0 ? "查看总结" : "确定"}
                 </button>
               </div>
             </motion.div>
@@ -496,7 +494,6 @@ const DrawView: React.FC<DrawViewProps> = ({
               <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 w-full max-h-[70vh] overflow-hidden">
                 {currentPrizeWinners.map((winner, idx) => {
                   const count = currentPrizeWinners.length;
-                  // Extremely dynamic scaling to ensure everything fits on one screen
                   let boxSize = 'w-64 p-6';
                   let nameSize = 'text-3xl';
                   let deptSize = 'text-sm';
@@ -509,6 +506,8 @@ const DrawView: React.FC<DrawViewProps> = ({
                     boxSize = 'w-36 p-3'; nameSize = 'text-xl'; deptSize = 'text-[10px]';
                   } else if (count > 15) {
                     boxSize = 'w-48 p-4'; nameSize = 'text-2xl'; deptSize = 'text-xs';
+                  } else if (count > 6) {
+                    boxSize = 'w-56 p-5'; nameSize = 'text-2xl'; deptSize = 'text-xs';
                   }
 
                   return (

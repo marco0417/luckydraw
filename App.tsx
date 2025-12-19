@@ -7,6 +7,38 @@ import { Settings, Play } from 'lucide-react';
 
 const STORAGE_KEY = 'lottery_data_v1';
 
+// 预设的测试数据
+const DEFAULT_PARTICIPANTS: Participant[] = [
+  { id: 'p1', name: '张伟', department: '研发部' },
+  { id: 'p2', name: '王芳', department: '产品部' },
+  { id: 'p3', name: '李静', department: '运营部' },
+  { id: 'p4', name: '刘洋', department: '行政部' },
+  { id: 'p5', name: '陈杰', department: '市场部' },
+  { id: 'p6', name: '杨丽', department: '研发部' },
+  { id: 'p7', name: '赵刚', department: '产品部' },
+  { id: 'p8', name: '黄勇', department: '运营部' },
+  { id: 'p9', name: '周明', department: '行政部' },
+  { id: 'p10', name: '胡军', department: '市场部' },
+  { id: 'p11', name: '朱波', department: '研发部' },
+  { id: 'p12', name: '林芳', department: '产品部' },
+  { id: 'p13', name: '何芳', department: '运营部' },
+  { id: 'p14', name: '郭峰', department: '行政部' },
+  { id: 'p15', name: '马丽', department: '市场部' },
+  { id: 'p16', name: '孙博', department: '研发部' },
+  { id: 'p17', name: '高杰', department: '产品部' },
+  { id: 'p18', name: '郑涛', department: '运营部' },
+  { id: 'p19', name: '谢明', department: '行政部' },
+  { id: 'p20', name: '韩杰', department: '市场部' },
+];
+
+const DEFAULT_PRIZES: Prize[] = [
+  { id: 'pz1', category: '特等奖', name: 'MacBook Pro 14', count: 1, remaining: 1, rank: 1 },
+  { id: 'pz2', category: '一等奖', name: 'iPhone 15 Pro', count: 2, remaining: 2, rank: 2 },
+  { id: 'pz3', category: '二等奖', name: 'iPad Air', count: 3, remaining: 3, rank: 3 },
+  { id: 'pz4', category: '三等奖', name: 'AirPods Pro 2', count: 5, remaining: 5, rank: 4 },
+  { id: 'pz5', category: '幸运奖', name: '精美茶具套装', count: 9, remaining: 9, rank: 5 },
+];
+
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.LOTTERY);
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -23,14 +55,20 @@ const App: React.FC = () => {
     if (saved) {
       try {
         const data = JSON.parse(saved);
-        setParticipants(data.participants || []);
-        setPrizes(data.prizes || []);
+        // 如果本地数据为空，则初始化预设数据
+        if ((!data.participants || data.participants.length === 0) && (!data.prizes || data.prizes.length === 0)) {
+           setParticipants(DEFAULT_PARTICIPANTS);
+           setPrizes(DEFAULT_PRIZES);
+        } else {
+           setParticipants(data.participants || []);
+           setPrizes(data.prizes || []);
+        }
+        
         setWinners(data.winners || []);
         setPresets(data.presets || []);
         setActivityName(data.activityName || '年度盛典');
         setCompanyName(data.companyName || '科技未来有限公司');
         
-        // When loading, find the smallest prize (highest rank)
         if (data.prizes && data.prizes.length > 0) {
           const sorted = [...data.prizes].sort((a: any, b: any) => b.rank - a.rank);
           setCurrentPrizeId(sorted[0].id);
@@ -38,6 +76,10 @@ const App: React.FC = () => {
       } catch (e) {
         console.error("Failed to parse storage data", e);
       }
+    } else {
+      // 首次进入没有存储，初始化默认数据
+      setParticipants(DEFAULT_PARTICIPANTS);
+      setPrizes(DEFAULT_PRIZES);
     }
   }, []);
 
@@ -57,8 +99,10 @@ const App: React.FC = () => {
 
   // Save to local storage
   useEffect(() => {
-    const data = { participants, prizes, winners, presets, activityName, companyName };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (participants.length > 0 || prizes.length > 0) {
+      const data = { participants, prizes, winners, presets, activityName, companyName };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
   }, [participants, prizes, winners, presets, activityName, companyName]);
 
   const handleReset = useCallback(() => {
@@ -78,6 +122,11 @@ const App: React.FC = () => {
       setActivityName('年度盛典');
       setCompanyName('科技未来有限公司');
       localStorage.removeItem(STORAGE_KEY);
+      // 重置后立即加载默认数据
+      setTimeout(() => {
+        setParticipants(DEFAULT_PARTICIPANTS);
+        setPrizes(DEFAULT_PRIZES);
+      }, 100);
     }
   }, []);
 

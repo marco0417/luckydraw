@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Participant, Prize, Winner, PresetWinner } from '../types';
 import { Upload, Trash2, Plus, Download, X, UserMinus, HelpCircle, LayoutGrid, Building2, PartyPopper } from 'lucide-react';
@@ -333,6 +332,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     <Plus size={18} />
                     添加奖项
                   </button>
+                  <button onClick={() => setPrizes([])} className="px-4 py-2 bg-white/5 border border-white/10 text-white/60 hover:text-white text-xs font-orbitron rounded transition-all">清空奖项</button>
                 </div>
               </div>
               <div className="space-y-4">
